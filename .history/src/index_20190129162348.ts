@@ -22,7 +22,7 @@ function Component (options: ComponentOptions<Vue> | VueClass<Vue>): any {
   }
 }
 
-// 增加自定义的钩子。如果不把方法名注册为钩子里面，该方法会进入componentOptions的methods里面，而不是option中
+// 增加自定义的钩子。如果不注册为钩子，该方法会进入componentOptions的methods里面，而不是option中
 Component.registerHooks = function registerHooks (keys: string[]): void {
   $internalHooks.push(...keys)
 }

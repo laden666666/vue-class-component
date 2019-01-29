@@ -4,8 +4,7 @@ import Vue, { ComponentOptions } from 'vue'
 // 为什么要 & typeof Vue？？？
 export type VueClass<V> = { new (...args: any[]): V & Vue } & typeof Vue
 
-// 保存属性装饰器结果的属性。vue-class-component提供了与其配套的属性装饰器的开发函数createDecorator。
-// __decorators__是用于保存属性装饰器的处理函数的
+// 扩展保存装饰器结果的属性
 export type DecoratedClass = VueClass<Vue> & {
   // Property, method and parameter decorators created by `createDecorator` helper
   // will enqueue functions that update component options for lazy processing.

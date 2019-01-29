@@ -90,12 +90,11 @@ export function componentFactory (
   // decorate options
   const decorators = (Component as DecoratedClass).__decorators__
   if (decorators) {
-    // 将属性装饰器的处理函数全部执行一遍
     decorators.forEach(fn => fn(options))
     delete (Component as DecoratedClass).__decorators__
   }
 
-  // 获取父类，如果Component不是继承自的Vue，则直接使用Vue。
+  // 获取Vue的父类，如果Component不是继承自的Vue，则直接使用Vue。
   // find super
   const superProto = Object.getPrototypeOf(Component.prototype)
   const Super = superProto instanceof Vue
@@ -153,51 +152,12 @@ function forwardStaticMembers (
     }
 
     // Some browsers does not allow reconfigure built-in properties
-    // 一些浏览器不支持defineProperty已有属性，这将会抛出错误，所以不在处理
     const extendedDescriptor = Object.getOwnPropertyDescriptor(Extended, key)
     if (extendedDescriptor && !extendedDescriptor.configurable) {
       return
     }
 
     const descriptor = Object.getOwnPropertyDescriptor(Original, key)!
-
-    // 不是很理解这段的做法，应该是ts的编译器会在不执行__proto__的浏览器上做了特殊操作，这导致bug。
-    // 看来得对ts编译有所了解才行
-    // 
-    // ts code:
-    // class A { }
-    // class B extends A { }
-    // 转换为js的code为
-    // var __extends = (this && this.__extends) || (function () {
-    //   var extendStatics = function (d, b) {
-    //       extendStatics = Object.setPrototypeOf ||
-    //           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-    //           function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    //       return extendStatics(d, b);
-    //   }
-    //   return function (d, b) {
-    //       extendStatics(d, b);
-    //       function __() { this.constructor = d; }
-    //       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    //   };
-    // })();
-    // var A = /** @class */ (function () {
-    //     function A() {
-    //     }
-    //     return A;
-    // }());
-    // var B = /** @class */ (function (_super) {
-    //     __extends(B, _super);
-    //     function B() {
-    //         return _super !== null && _super.apply(this, arguments) || this;
-    //     }
-    //     return B;
-    // }(A));
-    // 注意extendStatics这部分，就是引起bug的地方
-
-    // #203对此有介绍：
-    // ie9-10不支持__proto__或者setPrototypeOf，因此ts会将子类的值直接赋给到子类上面。这样会使得使得Component上面定义了Vue的静态方法和属性
-    // 而Component上面定义的方法和属性若是传递给了Extended，后续会导致不可预见的问题。
 
     // If the user agent does not support `__proto__` or its family (IE <= 10),
     // the sub class properties may be inherited properties from the super class in TypeScript.
@@ -225,7 +185,6 @@ function forwardStaticMembers (
       }
     }
 
-    // 如果子类的静态属性和vue的集成的子类的属性冲突，提示警告
     // Warn if the users manually declare reserved properties
     if (
       process.env.NODE_ENV !== 'production' &&

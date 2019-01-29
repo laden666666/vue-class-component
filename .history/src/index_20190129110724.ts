@@ -12,17 +12,15 @@ function Component <VC extends VueClass<Vue>>(target: VC): VC
 function Component (options: ComponentOptions<Vue> | VueClass<Vue>): any {
   // 如果options是一个函数，表明是一个类，使用componentFactory(options)
   if (typeof options === 'function') {
-    // options是VueClass<Vue>，此时是正则的类装饰
     return componentFactory(options)
   }
   
-  // 否则是一个vue的ComponentOptions，返回真正的类装饰器
+  // 否则是一个vue的ComponentOptions
   return function (Component: VueClass<Vue>) {
     return componentFactory(Component, options)
   }
 }
 
-// 增加自定义的钩子。如果不把方法名注册为钩子里面，该方法会进入componentOptions的methods里面，而不是option中
 Component.registerHooks = function registerHooks (keys: string[]): void {
   $internalHooks.push(...keys)
 }

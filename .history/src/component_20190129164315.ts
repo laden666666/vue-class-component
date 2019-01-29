@@ -90,7 +90,7 @@ export function componentFactory (
   // decorate options
   const decorators = (Component as DecoratedClass).__decorators__
   if (decorators) {
-    // 将属性装饰器的处理函数全部执行一遍
+    // 全部执行一遍？？？
     decorators.forEach(fn => fn(options))
     delete (Component as DecoratedClass).__decorators__
   }

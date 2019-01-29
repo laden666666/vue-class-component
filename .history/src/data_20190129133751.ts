@@ -52,7 +52,7 @@ export function collectDataFromConstructor (vm: Vue, Component: VueClass<Vue>) {
   Component.prototype._init = originalInit
 
   // create plain data object
-  // 根据Component对象（data），创建一个普通对象，并返回作为真正Component的data
+  // 根据Component对象，创建一个普通对象，并返回作为真正Component的data
   const plainData = {}
   Object.keys(data).forEach(key => {
     if (data[key] !== undefined) {

@@ -22,7 +22,7 @@ export interface VueDecorator {
 }
 
 /**
- * 创建属性装饰器，对外暴露的。如vue-property-decorator
+ * 创建装饰器
  * @export
  * @param {(options: ComponentOptions<Vue>, key: string, index: number) => void} factory 
  * @returns {VueDecorator} 
@@ -38,7 +38,7 @@ export function createDecorator (factory: (options: ComponentOptions<Vue>, key: 
     if (typeof index !== 'number') {
       index = undefined
     }
-    // 将属性装饰器的处理函数保存在__decorators__属性里，在Component返回前一起执行
+    // 核心是在构造函数里面的__decorators__属性，
     Ctor.__decorators__.push(options => factory(options, key, index))
   }
 }

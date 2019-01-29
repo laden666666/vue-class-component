@@ -90,7 +90,6 @@ export function componentFactory (
   // decorate options
   const decorators = (Component as DecoratedClass).__decorators__
   if (decorators) {
-    // 将属性装饰器的处理函数全部执行一遍
     decorators.forEach(fn => fn(options))
     delete (Component as DecoratedClass).__decorators__
   }
@@ -197,7 +196,7 @@ function forwardStaticMembers (
 
     // #203对此有介绍：
     // ie9-10不支持__proto__或者setPrototypeOf，因此ts会将子类的值直接赋给到子类上面。这样会使得使得Component上面定义了Vue的静态方法和属性
-    // 而Component上面定义的方法和属性若是传递给了Extended，后续会导致不可预见的问题。
+    // 而Component上面定义的方法和属性若是传递给了Extended会导致不可预见的问题。
 
     // If the user agent does not support `__proto__` or its family (IE <= 10),
     // the sub class properties may be inherited properties from the super class in TypeScript.

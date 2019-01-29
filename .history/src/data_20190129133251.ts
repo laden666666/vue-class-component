@@ -12,12 +12,8 @@ import { warn } from './util'
 export function collectDataFromConstructor (vm: Vue, Component: VueClass<Vue>) {
   // override _init to prevent to init as Vue instance
   // 将vue的私有构造器_init保存起来。用自定义的构造器，创建一个。这里类似于寄生继承，目的是为解决#209
-  // _init是vue原型上的私有方法，是vue真正的实例化方法。相当于jq的init方法
-  // _init会定义_uid，初始化事件、Provide、render、Injections等等，还会执行beforeCreate和created两个生命周期
   const originalInit = Component.prototype._init
   Component.prototype._init = function (this: Vue) {
-
-    // 找出vm自己拥有的属性，以及props
     // proxy to actual vm
     const keys = Object.getOwnPropertyNames(vm)
     // 2.2.0 compat (props are no longer exposed as self properties)
@@ -28,8 +24,6 @@ export function collectDataFromConstructor (vm: Vue, Component: VueClass<Vue>) {
         }
       }
     }
-
-    // 将这些属性
     keys.forEach(key => {
       // vue中data里面的“_”开头的属性会被忽略
       if (key.charAt(0) !== '_') {
@@ -52,7 +46,7 @@ export function collectDataFromConstructor (vm: Vue, Component: VueClass<Vue>) {
   Component.prototype._init = originalInit
 
   // create plain data object
-  // 根据Component对象（data），创建一个普通对象，并返回作为真正Component的data
+  // 根据Component对象，创建一个普通对象，并返回作为真正Component的data
   const plainData = {}
   Object.keys(data).forEach(key => {
     if (data[key] !== undefined) {
